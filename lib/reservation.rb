@@ -1,6 +1,8 @@
 module Hotel
   class Reservation
-    attr_accessor :date_range, :room
+    attr_reader :date_range, :id
+    attr_accessor :room
+    
     COST_PER_NIGHT = 200
     
     def initialize(start_date, end_date, room)

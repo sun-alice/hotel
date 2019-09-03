@@ -14,18 +14,25 @@ module Hotel
       NUM_HOTEL_ROOMS.times do |i|
         rooms << Hotel::Room.new(i+1)
       end
-      
     end
     
     def reserve_room(start_date, end_date)
-      #find the room, put that date range in the room's availability array
-      # start_date and end_date should be instances of class Date
-      return Reservation.new(start_date, end_date, nil)
+      date_range = DateRange.new(start_date, end_date)
+      booked_room = @rooms.sample
+      
+      reservation = Reservation.new(start_date, end_date, booked_room)
+      reservations << reservation
+      
+      return reservation
     end
     
-    def reservations(date)
-      #get reservations for date
-      return []
+    def list_of_reservations(date)
+      total_reservations = reservations.map do |reservation|
+        reservation.date_range.include? date
+        [reservation]
+      end
+      
+      return total_reservations
     end
     
     # Wave 2
