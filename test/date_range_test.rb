@@ -6,6 +6,8 @@ describe Hotel::DateRange do
       start_date = Date.new(2017, 01, 01)
       end_date = start_date + 3
       
+      p end_date
+      puts end_date - start_date
       range = Hotel::DateRange.new(start_date, end_date)
       
       expect(range.start_date).must_equal start_date
@@ -40,6 +42,11 @@ describe Hotel::DateRange do
       end_date = @range.end_date
       test_range = Hotel::DateRange.new(start_date, end_date)
       
+      puts start_date
+      puts end_date
+      puts test_range.start_date
+      puts test_range.end_date
+      
       expect(@range.overlap?(test_range)).must_equal true
     end
     
@@ -69,7 +76,7 @@ describe Hotel::DateRange do
   end
   
   xdescribe "include?" do
-    it "reutrns false if the date is clearly out" do
+    it "returns false if the date is clearly out" do
     end
     
     it "returns true for dates in the range" do

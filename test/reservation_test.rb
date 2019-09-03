@@ -11,11 +11,6 @@ describe Hotel::Reservation do
       
       expect(reservation).must_be_instance_of Hotel::Reservation
     end
-    
-    it "gives an error if there are no rooms available" do
-      
-    end
-    
   end
   
   describe "cost" do
