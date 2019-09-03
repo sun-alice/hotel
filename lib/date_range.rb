@@ -10,8 +10,8 @@ module Hotel
       raise ArgumentError, "0-length date range." if end_date == start_date 
     end
     
-    def overlap?(other)
-      return false
+    def overlap?(date_range)
+      return date_range.start_date <= end_date && start_date <= date_range.end_date
     end
     
     def include?(date)
@@ -19,7 +19,7 @@ module Hotel
     end
     
     def nights
-      return 3
+      return end_date - start_date 
     end
   end
 end
