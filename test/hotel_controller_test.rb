@@ -22,14 +22,49 @@ describe Hotel::HotelController do
     end
     
     describe "reserve_room" do
-      it "takes two Date objects and returns a Reservation" do
-        start_date = @date
-        end_date = start_date + 3
-        
-        reservation = @hotel_controller.reserve_room(start_date, end_date)
-        
-        expect(reservation).must_be_kind_of Hotel::Reservation
+      before do
+        @start_date = @date
+        @end_date = @start_date + 3
+        @reservation = @hotel_controller.reserve_room(@start_date, @end_date)
       end
+      
+      it "takes two Date objects and returns a Reservation" do
+        expect(@reservation).must_be_kind_of Hotel::Reservation
+      end
+      
+      it "reserves a room" do
+        expect(@reservation.room).must_be_kind_of Hotel::Room
+      end
+      
+      it "reserves the first available room" do
+        expect(@reservation.room.number).must_equal 1
+        
+        @hotel_controller.reserve_room(@start_date, @end_date)
+        test_reservation = @hotel_controller.reserve_room(@start_date, @end_date)
+        
+        expect(test_reservation.room.number).must_equal 3
+      end
+      
+      it "raises a standard error if there are no rooms available" do
+        19.times do
+          @hotel_controller.reserve_room(@start_date, @end_date)
+        end
+        
+        expect{(@hotel_controller.reserve_room(@start_date, @end_date))}.must_raise StandardError
+      end
+      
+      it "can start a reservation on the same day that one ends" do
+        19.times do
+          @hotel_controller.reserve_room(@start_date, @end_date)
+        end
+        
+        new_start_date = @end_date
+        new_end_date = @end_date+1
+        
+        new_reservation = @hotel_controller.reserve_room(new_start_date, new_end_date)
+        expect(new_reservation).must_be_kind_of Hotel::Reservation
+      end
+      
       
     end
     

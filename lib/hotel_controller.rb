@@ -17,12 +17,13 @@ module Hotel
     end
     
     def reserve_room(start_date, end_date)
-      booked_room = @rooms.sample
+      available_rooms = available_rooms(start_date, end_date)
       
-      reservation = Reservation.new(start_date, end_date, booked_room)
+      raise StandardError, "No available rooms." if available_rooms.length == 0
+      
+      reservation = Reservation.new(start_date, end_date, available_rooms[0])
       reservations << reservation
-      booked_room.availability << reservation.date_range
-      
+      available_rooms[0].availability << reservation.date_range
       return reservation
     end
     

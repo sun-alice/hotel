@@ -11,7 +11,7 @@ module Hotel
     end
     
     def overlap?(date_range)
-      return date_range.start_date <= end_date-1 && start_date < date_range.end_date
+      return date_range.start_date < end_date && start_date < date_range.end_date
     end
     
     def include?(date)
