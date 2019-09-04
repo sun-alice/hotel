@@ -17,28 +17,44 @@ module Hotel
     end
     
     def reserve_room(start_date, end_date)
-      date_range = DateRange.new(start_date, end_date)
       booked_room = @rooms.sample
       
       reservation = Reservation.new(start_date, end_date, booked_room)
       reservations << reservation
+      booked_room.availability << reservation.date_range
       
       return reservation
     end
     
     def list_of_reservations(date)
-      total_reservations = reservations.map do |reservation|
-        reservation.date_range.include? date
-        [reservation]
+      total_reservations = []
+      
+      reservations.each do |reservation|
+        if reservation.date_range.include?(date) 
+          total_reservations << reservation
+        end
       end
       
       return total_reservations
     end
     
-    # Wave 2
     def available_rooms(start_date, end_date)
-      # start_date and end_date should be instances of class Date
-      return []
+      date_range = DateRange.new(start_date, end_date)
+      available_room = []
+      
+      rooms.each do |room|
+        if room.availability.length == 0
+          available_room << room
+        else
+          room.availability.each do |reservation|
+            if (reservation.overlap?(date_range) == false)
+              available_room << room
+            end      
+          end
+        end
+      end
+      
+      return available_room
     end
   end
 end

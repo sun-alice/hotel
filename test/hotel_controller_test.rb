@@ -46,8 +46,8 @@ describe Hotel::HotelController do
       it "can return a list of reservations for a day" do
         start_date = @date
         end_date = start_date + 3
-        reservation = @hotel_controller.reserve_room(start_date, end_date)
-        reservation = @hotel_controller.reserve_room(start_date, end_date)
+        @hotel_controller.reserve_room(start_date, end_date)
+        @hotel_controller.reserve_room(start_date, end_date)
         
         reservation_list = @hotel_controller.list_of_reservations(@date)
         
@@ -67,6 +67,19 @@ describe Hotel::HotelController do
         
         expect(room_list).must_be_kind_of Array
       end
+      
+      it "returns a list of all available hotel rooms given a range" do
+        start_date = @date
+        end_date = start_date + 3
+        
+        @hotel_controller.reserve_room(start_date, end_date)
+        
+        available_room_list = @hotel_controller.available_rooms(start_date+1, end_date-1)
+        test_available_list = @hotel_controller.available_rooms(start_date-10, end_date-10)
+        expect(available_room_list.length).must_equal 19
+        expect(test_available_list.length).must_equal 20
+      end
+      
     end
   end
 end
