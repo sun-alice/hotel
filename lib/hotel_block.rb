@@ -7,7 +7,7 @@ module Hotel
     attr_accessor :num_rooms, :room_availability
     
     def initialize(start_date, end_date, block_rooms)
-      @date_range = Hotel::DateRange.new(start_date, end_date)
+      @date_range = DateRange.new(start_date, end_date)
       @block_rooms = block_rooms
       @num_rooms = block_rooms.length
       @room_availability = Hash[block_rooms.collect {|room| [room, :available]}]

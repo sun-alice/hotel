@@ -14,7 +14,7 @@ module Hotel
       @reservations = []
       
       NUM_HOTEL_ROOMS.times do |i|
-        rooms << Hotel::Room.new(i+1)
+        rooms << Room.new(i+1)
       end
     end
     
@@ -31,7 +31,7 @@ module Hotel
     
     def request_block(start_date, end_date, num_rooms)
       available_rooms = available_rooms(start_date, end_date)
-      date_range = Hotel::DateRange.new(start_date, end_date)
+      date_range = DateRange.new(start_date, end_date)
       
       raise StandardError, "Not enough rooms available." if num_rooms > available_rooms.length
       
@@ -44,7 +44,7 @@ module Hotel
         i+=1
       end
       
-      hotel_block = Hotel::HotelBlock.new(start_date, end_date, block_rooms)
+      hotel_block = HotelBlock.new(start_date, end_date, block_rooms)
       
       return hotel_block
     end

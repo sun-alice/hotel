@@ -4,7 +4,7 @@ module Hotel
     attr_accessor :room
     
     def initialize(start_date, end_date, room)
-      @date_range = Hotel::DateRange.new(start_date, end_date)
+      @date_range = DateRange.new(start_date, end_date)
       @room = room
     end
     
