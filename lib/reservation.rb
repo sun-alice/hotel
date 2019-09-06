@@ -9,7 +9,7 @@ module Hotel
     end
     
     def cost
-      return date_range.nights*room.cost_per_night
+      return date_range.nights*room.rate
     end
     
   end
