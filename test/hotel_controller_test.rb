@@ -64,8 +64,6 @@ describe Hotel::HotelController do
         new_reservation = @hotel_controller.reserve_room(new_start_date, new_end_date)
         expect(new_reservation).must_be_kind_of Hotel::Reservation
       end
-      
-      
     end
     
     describe "reservations" do
@@ -117,4 +115,49 @@ describe Hotel::HotelController do
       
     end
   end
+  
+  describe "wave 3" do
+    before do
+      @start_date = @date
+      @end_date = @start_date + 3
+    end
+    
+    describe "request_block" do
+      it "will raise a standard error if there are not enough rooms to fulfill reservation" do
+        17.times do
+          @hotel_controller.reserve_room(@start_date, @end_date)
+        end
+        
+        expect{(request_block(@start_date, @end_date, 5))}.must_raise StandardError
+      end
+      
+      it "will add the room to the hotel block's list of rooms" do  
+        hotel_block = @hotel_controller.request_block(@start_date, @end_date, 5)
+        expect(hotel_block.num_rooms).must_equal 5
+      end
+      
+      it "will not allow a room reservation if it is taken by a hotel block" do
+        4.times do
+          @hotel_controller.request_block(@start_date, @end_date, 5)
+        end
+        
+        expect{(reserve_room(@start_date, @end_date))}.must_raise StandardError
+      end
+      
+      it "will not allow a hotel block if it is taken by a hotel block" do
+        4.times do
+          @hotel_controller.request_block(@start_date, @end_date, 5)
+        end
+        expect{(request_block(@start_date, @end_date, 2))}.must_raise StandardError
+      end
+      
+    end
+    
+    describe "reserve_block_room" do
+      it "will "
+      
+    end
+    
+  end
+  
 end

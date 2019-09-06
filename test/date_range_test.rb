@@ -6,8 +6,6 @@ describe Hotel::DateRange do
       start_date = Date.new(2017, 01, 01)
       end_date = start_date + 3
       
-      p end_date
-      puts end_date - start_date
       range = Hotel::DateRange.new(start_date, end_date)
       
       expect(range.start_date).must_equal start_date

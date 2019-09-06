@@ -1,10 +1,12 @@
 require_relative 'room'
 require_relative 'date_range'
 require_relative 'reservation'
+require_relative 'hotel_block'
 
 module Hotel
   class HotelController
     attr_reader :rooms, :reservations
+    
     NUM_HOTEL_ROOMS = 20
     
     def initialize
@@ -27,6 +29,37 @@ module Hotel
       return reservation
     end
     
+    def request_block(start_date, end_date, num_rooms)
+      available_rooms = available_rooms(start_date, end_date)
+      date_range = Hotel::DateRange.new(start_date, end_date)
+      
+      raise StandardError, "Not enough rooms available." if num_rooms > available_rooms.length
+      
+      block_rooms = []
+      i = 0
+      
+      num_rooms.times do |i|
+        block_rooms << available_rooms[i]
+        available_rooms[i].availability << date_range
+        i+=1
+      end
+      
+      hotel_block = Hotel::HotelBlock.new(start_date, end_date, block_rooms)
+      
+      return hotel_block
+    end
+    
+    def reserve_block_room(block, room)
+      raise StandardError, "Not enough rooms available." if block.any_available_block_rooms? == false
+      raise StandardError, "That room is not in this block." unless block.room_availability.has_key? room
+      
+      block_room_res = Reservation.new(block.date_range.start_date, block.date_range.end_date, room)
+      reservations <<  block_room_res
+      #change availability in block array of hashes
+      
+      return block_room_res
+    end
+    
     def list_of_reservations(date)
       total_reservations = []
       
@@ -41,21 +74,21 @@ module Hotel
     
     def available_rooms(start_date, end_date)
       date_range = DateRange.new(start_date, end_date)
-      available_room = []
+      available_rooms = []
       
       rooms.each do |room|
         if room.availability.length == 0
-          available_room << room
+          available_rooms << room
         else
           room.availability.each do |reservation|
             if (reservation.overlap?(date_range) == false)
-              available_room << room
+              available_rooms << room
             end      
           end
         end
       end
       
-      return available_room
+      return available_rooms
     end
   end
 end
