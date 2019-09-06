@@ -2,7 +2,6 @@ module Hotel
   class HotelBlock
     DISCOUNT_RATE = 0.5
     MAX_ROOMS = 5
-    COST_PER_NIGHT = 200
     
     attr_reader :date_range, :block_rooms
     attr_accessor :num_rooms, :room_availability
@@ -17,7 +16,12 @@ module Hotel
     end
     
     def cost
-      return date_range.nights*COST_PER_NIGHT*DISCOUNT_RATE*num_rooms
+      total_cost = 0
+      block_rooms.each do |room|
+        total_cost += date_range.nights*DISCOUNT_RATE*room.rate
+      end
+      
+      return total_cost
     end
     
     def change_room_status_to_unavailable(requested_room)
