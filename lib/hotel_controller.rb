@@ -49,13 +49,14 @@ module Hotel
       return hotel_block
     end
     
-    def reserve_block_room(block, room)
+    def reserve_block_room(block, requested_room)
       raise StandardError, "Not enough rooms available." if block.any_available_block_rooms? == false
       raise StandardError, "That room is not in this block." unless block.room_availability.has_key? room
+      block.is_room_available?(requested_room)
       
       block_room_res = Reservation.new(block.date_range.start_date, block.date_range.end_date, room)
       reservations <<  block_room_res
-      #change availability in block array of hashes
+      block.change_room_status_to_unavailable(requested_room)
       
       return block_room_res
     end

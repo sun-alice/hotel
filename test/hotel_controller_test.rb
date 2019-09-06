@@ -154,7 +154,7 @@ describe Hotel::HotelController do
     end
     
     describe "reserve_block_room" do
-      it "will "
+      it "will create a block "
       
     end
     

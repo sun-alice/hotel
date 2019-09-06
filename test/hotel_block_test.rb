@@ -23,40 +23,54 @@ describe Hotel::HotelBlock do
     end
   end
   
-  describe "cost" do
+  describe "hotel block methods" do
     before do
       start_date = Date.new(2017, 01, 01)
       end_date = start_date + 3
       @hotel_block = Hotel::HotelBlock.new(start_date, end_date, @rooms)
     end
     
-    it "returns a number" do
-      expect(@hotel_block.cost).must_be_kind_of Numeric
-    end
-    
-    it "returns a discounted rate" do
-      expect(@hotel_block.cost).must_equal 600
-    end
-  end
-  
-  describe "any_available_block_rooms?" do
-    before do
-      start_date = Date.new(2017, 01, 01)
-      end_date = start_date + 3
-      @hotel_block = Hotel::HotelBlock.new(start_date, end_date, @rooms)
-    end
-    
-    it "will return true if there are rooms available" do
-      expect(@hotel_block.any_available_block_rooms?).must_equal true
-    end
-    
-    it "will return false if there are no rooms available" do
-      @hotel_block.room_availability.each do |room|
-        room["status"] = :unavailable
+    describe "cost" do
+      it "returns a number" do
+        expect(@hotel_block.cost).must_be_kind_of Numeric
       end
       
-      expect(@hotel_block.any_available_block_rooms?).must_equal false
+      it "returns a discounted rate" do
+        expect(@hotel_block.cost).must_equal 600
+      end
     end
+    
+    describe "any_available_block_rooms?" do
+      it "will return true if there are rooms available" do
+        expect(@hotel_block.any_available_block_rooms?).must_equal true
+      end
+      
+      it "will return false if there are no rooms available" do
+        @hotel_block.room_availability.update(@hotel_block.room_availability) {|key, value| value = :unavailable}
+        
+        expect(@hotel_block.any_available_block_rooms?).must_equal false
+      end
+    end
+    
+    describe "change_room_status_to_unavailable" do
+      it "will change a room status to unavailable" do
+        @hotel_block.room_availability.each_key do |room|
+          @hotel_block.change_room_status_to_unavailable(room)
+        end
+        
+        expect(@hotel_block.any_available_block_rooms?).must_equal false
+      end
+    end
+    
+    describe "is_room_available?" do
+      it "will raise a standard error if that room requested is not available" do
+        @hotel_block.room_availability.each_key do |room|
+          @hotel_block.change_room_status_to_unavailable(room)
+          expect{(@hotel_block.is_room_available?(room))}.must_raise StandardError
+        end
+      end
+    end
+    
   end
   
 end
