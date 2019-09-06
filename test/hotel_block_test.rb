@@ -63,10 +63,16 @@ describe Hotel::HotelBlock do
     end
     
     describe "is_room_available?" do
-      it "will raise a standard error if that room requested is not available" do
+      it "will return false if that room requested is not available" do
         @hotel_block.room_availability.each_key do |room|
           @hotel_block.change_room_status_to_unavailable(room)
-          expect{(@hotel_block.is_room_available?(room))}.must_raise StandardError
+          expect(@hotel_block.is_room_available?(room)).must_equal false
+        end
+      end
+      
+      it "will return true if that room requested is available" do
+        @hotel_block.room_availability.each_key do |room|
+          expect(@hotel_block.is_room_available?(room)).must_equal true
         end
       end
     end

@@ -31,19 +31,19 @@ module Hotel
     def is_room_available?(requested_room)
       room_availability.each do |room, availability|
         if room == requested_room && room_availability[room] == :unavailable
-          raise StandardError, "That room is unavailable." 
+          return false
         end
       end
+      return true
     end
     
     def any_available_block_rooms?
       room_availability.each_value do |availablility|
         if availablility == :available
           return true
-        else
-          return false
         end
       end
+      return false
     end
     
     
