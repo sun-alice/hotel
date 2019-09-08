@@ -128,6 +128,11 @@ describe Hotel::HotelController do
     end
     
     describe "request_block" do
+      it "will return a block number" do
+        expect(@hotel_controller.request_block(@start_date, @end_date, 5)).must_be_kind_of Integer
+        expect(@hotel_controller.request_block(@start_date, @end_date, 5)).must_equal 2
+      end
+      
       it "will raise a standard error if there are not enough rooms to fulfill reservation" do
         17.times do
           @hotel_controller.reserve_room(@start_date, @end_date)
@@ -137,8 +142,8 @@ describe Hotel::HotelController do
       end
       
       it "will add the room to the hotel block's list of rooms" do  
-        hotel_block = @hotel_controller.request_block(@start_date, @end_date, 5)
-        expect(hotel_block.num_rooms).must_equal 5
+        @hotel_controller.request_block(@start_date, @end_date, 5)
+        expect(@hotel_controller.blocks[0].num_rooms).must_equal 5
       end
       
       it "will not allow a room reservation if it is taken by a hotel block" do
@@ -160,46 +165,53 @@ describe Hotel::HotelController do
     
     describe "reserve_block_room" do
       before do
-        @hotel_block = @hotel_controller.request_block(@start_date, @end_date, 2)
+        @block_num = @hotel_controller.request_block(@start_date, @end_date, 2)
+        @hotel_block = @hotel_controller.blocks[0]
+      end
+      
+      it "will raise an error if the block doesn't exist (is nil)" do
+        test_room = Hotel::Room.new(100)
+        expect{@hotel_controller.reserve_block_room(8, test_room)}.must_raise StandardError
       end
       
       it "will raise an error if that room is not in that hotel block" do
         test_room = Hotel::Room.new(100)
-        expect{(@hotel_controller.reserve_block_room(@hotel_block, test_room))}.must_raise StandardError
+        expect{(@hotel_controller.reserve_block_room(@block_num, test_room))}.must_raise StandardError
       end
       
       it "will raise an error if that room is available" do
         @hotel_block.room_availability.each_key do |room|
-          @hotel_controller.reserve_block_room(@hotel_block, room)
+          @hotel_controller.reserve_block_room(@block_num, room)
         end
         
         @hotel_block.room_availability.each_key do |room|
-          expect{(@hotel_controller.reserve_block_room(@hotel_block, room))}.must_raise StandardError
+          expect{(@hotel_controller.reserve_block_room(@block_num, room))}.must_raise StandardError
         end
         
       end
       
       it "will create a reservation for the block room once the room is requested" do
         test_room = @hotel_block.room_availability.keys[0]
-        expect(@hotel_controller.reserve_block_room(@hotel_block, test_room)).must_be_kind_of Hotel::Reservation
+        expect(@hotel_controller.reserve_block_room(@block_num, test_room)).must_be_kind_of Hotel::Reservation
       end
       
       it "will put the reservation in the total list of reservations" do
         test_room = @hotel_block.room_availability.keys[0]
-        test_block_reservation = @hotel_controller.reserve_block_room(@hotel_block, test_room)
+        test_block_reservation = @hotel_controller.reserve_block_room(@block_num, test_room)
         
         expect(@hotel_controller.reservations.include? test_block_reservation).must_equal true
       end
       
       it "will change the status of the room requested to unavailable" do
         test_room = @hotel_block.room_availability.keys[0]
-        test_block_reservation = @hotel_controller.reserve_block_room(@hotel_block, test_room)
+        test_block_reservation = @hotel_controller.reserve_block_room(@block_num, test_room)
         
         expect(@hotel_block.room_availability.values[0]).must_equal :unavailable
         
       end
       
     end
+    
     
   end
   

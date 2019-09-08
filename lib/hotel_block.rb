@@ -4,9 +4,10 @@ module Hotel
     MAX_ROOMS = 5
     
     attr_reader :date_range, :block_rooms
-    attr_accessor :num_rooms, :room_availability
+    attr_accessor :num_rooms, :room_availability, :block_number
     
-    def initialize(start_date, end_date, block_rooms)
+    def initialize(block_number, start_date, end_date, block_rooms)
+      @block_number = block_number
       @date_range = DateRange.new(start_date, end_date)
       @block_rooms = block_rooms
       @num_rooms = block_rooms.length

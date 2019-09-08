@@ -17,7 +17,7 @@ describe Hotel::HotelBlock do
       end_date = start_date + 3
       block_rooms = @rooms
       
-      hotel_block = Hotel::HotelBlock.new(start_date, end_date, block_rooms)
+      hotel_block = Hotel::HotelBlock.new(1, start_date, end_date, block_rooms)
       
       expect(hotel_block).must_be_instance_of Hotel::HotelBlock
     end
@@ -27,7 +27,7 @@ describe Hotel::HotelBlock do
     before do
       start_date = Date.new(2017, 01, 01)
       end_date = start_date + 3
-      @hotel_block = Hotel::HotelBlock.new(start_date, end_date, @rooms)
+      @hotel_block = Hotel::HotelBlock.new(1, start_date, end_date, @rooms)
     end
     
     describe "cost" do

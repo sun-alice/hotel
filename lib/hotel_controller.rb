@@ -5,13 +5,14 @@ require_relative 'hotel_block'
 
 module Hotel
   class HotelController
-    attr_reader :rooms, :reservations
+    attr_reader :rooms, :reservations, :blocks
     
     NUM_HOTEL_ROOMS = 20
     
     def initialize
       @rooms = []
       @reservations = []
+      @blocks = []
       
       NUM_HOTEL_ROOMS.times do |i|
         rooms << Room.new(i+1)
@@ -36,6 +37,7 @@ module Hotel
       raise StandardError, "Not enough rooms available." if num_rooms > available_rooms.length
       
       block_rooms = []
+      block_number = blocks.length+1
       i = 0
       
       num_rooms.times do |i|
@@ -44,12 +46,15 @@ module Hotel
         i+=1
       end
       
-      hotel_block = HotelBlock.new(start_date, end_date, block_rooms)
+      hotel_block = HotelBlock.new(block_number, start_date, end_date, block_rooms)
+      @blocks << hotel_block
       
-      return hotel_block
+      return block_number
     end
     
-    def reserve_block_room(block, requested_room)
+    def reserve_block_room(block_number, requested_room)
+      block = get_block(block_number)
+      raise StandardError, "That block doesn't exist." if block == nil
       raise StandardError, "That room is not in this block." unless block.room_availability.has_key? requested_room
       raise StandardError, "That room is not available" if block.is_room_available?(requested_room) == false
       
@@ -89,6 +94,20 @@ module Hotel
       end
       
       return available_rooms
+    end
+    
+    private
+    
+    def get_block(find_this_block_number)
+      found_block = nil
+      
+      blocks.each do |block|
+        if block.block_number == find_this_block_number
+          found_block = block
+        end
+      end
+      
+      return found_block
     end
   end
 end
