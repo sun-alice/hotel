@@ -100,7 +100,6 @@ module Hotel
       return available_rooms
     end
     
-    
     def rooms_csv(filename)
       CSV.open(filename, "w", :write_headers => true, :headers => ["room_number", "reservations", "rate"]) do |file|
         rooms.each do |room|
@@ -145,6 +144,30 @@ module Hotel
     def load_data(filename)
       data = CSV.read(filename, headers: true).map(&:to_h)
       return data
+    end
+    
+    def get_res(hotel_controller, res_num) 
+      found_res = nil
+      
+      hotel_controller.reservations.each do |res|
+        if res_num == res.reservation_number
+          found_res = res
+        end
+      end
+      
+      return found_res
+    end
+    
+    def get_room(hotel_controller, room_num)
+      found_room = nil
+      
+      hotel_controller.rooms.each do |room|
+        if room_num == room.number
+          found_room = room
+        end
+      end
+      
+      return found_room
     end
     
     private
