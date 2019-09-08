@@ -9,6 +9,7 @@ require "minitest/reporters"
 require "minitest/skip_dsl"
 
 require "date"
+require "csv"
 
 Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
 

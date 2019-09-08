@@ -214,12 +214,104 @@ describe Hotel::HotelController do
         test_block_reservation = @hotel_controller.reserve_block_room(@block_num, test_room)
         
         expect(@hotel_block.room_availability.values[0]).must_equal :unavailable
-        
       end
+      
+    end
+    
+    describe "csv methods" do
+      describe "writing files" do
+        before do
+          @hotel_controller.rooms_csv("rooms.csv")
+          @hotel_controller.blocks_csv("blocks.csv")
+          @hotel_controller.reservations_csv("reservations.csv")
+          
+          @room_headers = ["room_number","reservations","rate"]
+          @reservations_headers = ["reservation_number","start_date","end_date","room_number"]
+          @blocks_headers = ["block_number","start_date","end_date","rooms_in_block","room_availability"]
+        end
+        
+        it 'can create a room csv file' do
+          expect(File.exist?("rooms.csv")).must_equal true
+        end
+        
+        it 'can create a block csv file' do
+          expect(File.exist?("blocks.csv")).must_equal true
+        end
+        
+        it 'can create a reservations csv file' do
+          expect(File.exist?("reservations.csv")).must_equal true
+        end
+        
+        it "has the correct headers for rooms.csv" do
+          CSV.read("rooms.csv", headers: true) do |line|
+            @room_headers.each do |header|
+              expect(line[header]).must_equal @room_headers[header]
+            end
+          end
+        end
+        
+        it "has the correct headers for reservations.csv" do
+          CSV.read("reservations.csv", headers: true) do |line|
+            @reservations_headers.each do |header|
+              expect(line[header]).must_equal @reservations_headers[header]
+            end
+          end
+        end
+        
+        it "has the correct headers for blocks.csv" do
+          CSV.read("blocks.csv", headers: true) do |line|
+            @blocks_headers.each do |header|
+              expect(line[header]).must_equal @blocks_headers[header]
+            end
+          end
+        end
+        
+        it "has 20 rooms in the rooms.csv" do
+          data = @hotel_controller.load_data("rooms.csv")
+          expect(data.length).must_equal 20
+        end
+        
+        it "can write a room availability into rooms.csv" do
+          start_date = @date
+          end_date = @start_date + 3
+          @hotel_controller.reserve_room(start_date, end_date)
+          @hotel_controller.rooms_csv("rooms.csv")
+          data = @hotel_controller.load_data("rooms.csv")
+          
+          expect(data[0].values[1]).must_equal "2020-08-04 - 2020-08-07"
+        end
+        
+        it "can write a reservation into reservation.csv" do
+          start_date = @date
+          end_date = @start_date + 3
+          @hotel_controller.reserve_room(start_date, end_date)
+          @hotel_controller.reserve_room(start_date, end_date)
+          
+          @hotel_controller.reservations_csv("reservations.csv")
+          
+          data = @hotel_controller.load_data("reservations.csv")
+          
+          expect(data.length).must_equal 2
+        end
+        
+        it "can write a block into blocks.csv" do
+          start_date = @date
+          end_date = @start_date + 3
+          @hotel_controller.request_block(@start_date, @end_date, 5)
+          
+          @hotel_controller.blocks_csv("blocks.csv")
+          
+          data = @hotel_controller.load_data("blocks.csv")
+          
+          expect(data.length).must_equal 1
+        end
+      end
+      
       
     end
     
     
   end
+  
   
 end

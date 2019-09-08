@@ -3,6 +3,8 @@ require_relative 'date_range'
 require_relative 'reservation'
 require_relative 'hotel_block'
 
+require 'csv'
+
 module Hotel
   class HotelController
     attr_reader :rooms, :reservations, :blocks
@@ -98,6 +100,53 @@ module Hotel
       return available_rooms
     end
     
+    
+    def rooms_csv(filename)
+      CSV.open(filename, "w", :write_headers => true, :headers => ["room_number", "reservations", "rate"]) do |file|
+        rooms.each do |room|
+          reservations = ""
+          
+          room.availability.each do |availability|
+            reservations += "#{availability.start_date} - #{availability.end_date}"
+          end
+          
+          file << [room.number, reservations, room.rate]
+        end
+      end
+    end
+    
+    def reservations_csv(filename)
+      CSV.open(filename, "w", :write_headers => true, :headers => ["reservation_number", "start_date", "end_date", "room_number"]) do |file|
+        reservations.each do |reservation|
+          file << [reservation.reservation_number, reservation.date_range.start_date, reservation.date_range.end_date, reservation.room.number]
+        end
+      end
+    end
+    
+    def blocks_csv(filename)
+      CSV.open(filename, "w", :write_headers => true, :headers => ["block_number", "start_date", "end_date", "rooms_in_block", "room_availability"]) do |file|
+        blocks.each do |block|
+          rooms_in_block = ""
+          room_availability = ""
+          
+          block.block_rooms.each do |room|
+            rooms_in_block += "#{room.number};"
+          end
+          
+          block.room_availability.each do |key, value|
+            room_availability += "room #{key.number}: #{value};"
+          end
+          
+          file << [block.block_number, block.date_range.start_date, block.date_range.end_date, rooms_in_block, room_availability]
+        end
+      end
+    end
+    
+    def load_data(filename)
+      data = CSV.read(filename, headers: true).map(&:to_h)
+      return data
+    end
+    
     private
     
     def get_block(find_this_block)
@@ -111,18 +160,6 @@ module Hotel
       
       return found_block
     end
-    
-    # def get_reservation(find_this_reservation)
-    #   found_res = nil
-    
-    #   reservations.each do |res|
-    #     if res.reservation_number == find_this_reservation
-    #       found_res = res
-    #     end
-    #   end
-    
-    #   return found_res
-    # end
     
   end
 end
