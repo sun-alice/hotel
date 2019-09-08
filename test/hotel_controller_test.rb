@@ -310,7 +310,27 @@ describe Hotel::HotelController do
       
     end
     
-    
+    describe "get_room & get_res" do
+      it "will return a reservation object given a reservation number" do
+        start_date = @date
+        end_date = @start_date + 3
+        @hotel_controller.reserve_room(start_date, end_date)
+        found_res = @hotel_controller.get_res(1)
+        
+        expect(found_res).must_be_kind_of Hotel::Reservation
+        expect(found_res.reservation_number).must_equal 1
+      end
+      
+      it "will return a room object given a room number" do
+        start_date = @date
+        end_date = @start_date + 3
+        @hotel_controller.reserve_room(start_date, end_date)
+        found_room = @hotel_controller.get_room(1)
+        
+        expect(found_room).must_be_kind_of Hotel::Room
+        expect(found_room.number).must_equal 1
+      end
+    end
   end
   
   

@@ -146,10 +146,10 @@ module Hotel
       return data
     end
     
-    def get_res(hotel_controller, res_num) 
+    def get_res(res_num) 
       found_res = nil
       
-      hotel_controller.reservations.each do |res|
+      reservations.each do |res|
         if res_num == res.reservation_number
           found_res = res
         end
@@ -158,10 +158,10 @@ module Hotel
       return found_res
     end
     
-    def get_room(hotel_controller, room_num)
+    def get_room(room_num)
       found_room = nil
       
-      hotel_controller.rooms.each do |room|
+      rooms.each do |room|
         if room_num == room.number
           found_room = room
         end
