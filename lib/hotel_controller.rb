@@ -24,10 +24,11 @@ module Hotel
       
       raise StandardError, "No available rooms." if available_rooms.length == 0
       
-      reservation = Reservation.new(start_date, end_date, available_rooms[0])
+      reservation_number = @reservations.length+1
+      reservation = Reservation.new(reservation_number, start_date, end_date, available_rooms[0])
       reservations << reservation
       available_rooms[0].availability << reservation.date_range
-      return reservation
+      return reservation_number
     end
     
     def request_block(start_date, end_date, num_rooms)
@@ -58,7 +59,8 @@ module Hotel
       raise StandardError, "That room is not in this block." unless block.room_availability.has_key? requested_room
       raise StandardError, "That room is not available" if block.is_room_available?(requested_room) == false
       
-      block_room_res = Reservation.new(block.date_range.start_date, block.date_range.end_date, requested_room)
+      reservation_number = @reservations.length+1
+      block_room_res = Reservation.new(reservation_number, block.date_range.start_date, block.date_range.end_date, requested_room)
       reservations <<  block_room_res
       block.change_room_status_to_unavailable(requested_room)
       
@@ -98,16 +100,29 @@ module Hotel
     
     private
     
-    def get_block(find_this_block_number)
+    def get_block(find_this_block)
       found_block = nil
       
       blocks.each do |block|
-        if block.block_number == find_this_block_number
+        if block.block_number == find_this_block
           found_block = block
         end
       end
       
       return found_block
     end
+    
+    # def get_reservation(find_this_reservation)
+    #   found_res = nil
+    
+    #   reservations.each do |res|
+    #     if res.reservation_number == find_this_reservation
+    #       found_res = res
+    #     end
+    #   end
+    
+    #   return found_res
+    # end
+    
   end
 end

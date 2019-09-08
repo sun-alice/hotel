@@ -25,7 +25,8 @@ describe Hotel::HotelController do
       before do
         @start_date = @date
         @end_date = @start_date + 3
-        @reservation = @hotel_controller.reserve_room(@start_date, @end_date)
+        @hotel_controller.reserve_room(@start_date, @end_date)
+        @reservation = @hotel_controller.reservations[0]
       end
       
       it "takes two Date objects and returns a Reservation" do
@@ -36,13 +37,18 @@ describe Hotel::HotelController do
         expect(@reservation.room).must_be_kind_of Hotel::Room
       end
       
+      it "returns an integer (for room number)" do
+        expect(@hotel_controller.reserve_room(@start_date, @end_date)).must_be_kind_of Integer
+      end
+      
       it "reserves the first available room" do
         expect(@reservation.room.number).must_equal 1
         
         @hotel_controller.reserve_room(@start_date, @end_date)
-        test_reservation = @hotel_controller.reserve_room(@start_date, @end_date)
+        @hotel_controller.reserve_room(@start_date, @end_date)
+        test_res = @hotel_controller.reservations.last
         
-        expect(test_reservation.room.number).must_equal 3
+        expect(test_res.room.number).must_equal 3
       end
       
       it "raises a standard error if there are no rooms available" do
@@ -61,7 +67,8 @@ describe Hotel::HotelController do
         new_start_date = @end_date
         new_end_date = @end_date+1
         
-        new_reservation = @hotel_controller.reserve_room(new_start_date, new_end_date)
+        @hotel_controller.reserve_room(new_start_date, new_end_date)
+        new_reservation = @hotel_controller.reservations.last
         expect(new_reservation).must_be_kind_of Hotel::Reservation
       end
       
