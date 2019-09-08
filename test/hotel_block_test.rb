@@ -43,6 +43,10 @@ describe Hotel::HotelBlock do
     describe "any_available_block_rooms?" do
       it "will return true if there are rooms available" do
         expect(@hotel_block.any_available_block_rooms?).must_equal true
+        
+        @hotel_block.change_room_status_to_unavailable(@rooms[0])
+        
+        expect(@hotel_block.any_available_block_rooms?).must_equal true
       end
       
       it "will return false if there are no rooms available" do

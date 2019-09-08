@@ -60,7 +60,7 @@ module Hotel
       return block_room_res
     end
     
-    def list_of_reservations(date)
+    def list_of_reservations_for_a_date(date)
       total_reservations = []
       
       reservations.each do |reservation|

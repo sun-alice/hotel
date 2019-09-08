@@ -73,7 +73,7 @@ describe Hotel::HotelController do
     
     describe "reservations" do
       it "takes a Date and returns a list of Reservations" do
-        reservation_list = @hotel_controller.list_of_reservations(@date)
+        reservation_list = @hotel_controller.list_of_reservations_for_a_date(@date)
         
         expect(reservation_list).must_be_kind_of Array
         reservation_list.each do |res|
@@ -87,7 +87,7 @@ describe Hotel::HotelController do
         @hotel_controller.reserve_room(start_date, end_date)
         @hotel_controller.reserve_room(start_date, end_date)
         
-        reservation_list = @hotel_controller.list_of_reservations(@date)
+        reservation_list = @hotel_controller.list_of_reservations_for_a_date(@date)
         
         expect(reservation_list.length).must_equal 2
       end
