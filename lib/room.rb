@@ -1,6 +1,6 @@
 module Hotel
   class Room
-    attr_accessor :number, :availability, :rate
+    attr_reader :number, :availability, :rate
     
     COST_PER_NIGHT = 200
     
