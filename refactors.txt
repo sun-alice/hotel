@@ -1,0 +1,5 @@
+1. Making get_room and get_res methods private and working around that.
+2. Naming methods and variables more clearly.
+3. Decouple the main.rb from the hotel_controller.rb by only calling the get_room and get_res methods in the hotel_controller.rb
+
+
