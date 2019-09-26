@@ -45,7 +45,7 @@ module Hotel
       
       num_rooms.times do |i|
         block_rooms << available_rooms[i]
-        available_rooms[i].availability << date_range
+        available_rooms[i].add_reservation_time(date_range)
         i+=1
       end
       
